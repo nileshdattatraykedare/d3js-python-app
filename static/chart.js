@@ -1,7 +1,6 @@
 //
 
 
-
 $(document).ready(function() {
 var url = 'http://localhost:5000/get_chart_data'
 
@@ -125,5 +124,4 @@ tooltip.append("text")
 var dataLength = data.length;
 document.getElementById("info").innerHTML = '<div>' + data[0]['DATE'] + ' - ' + data[50-1]['DATE'] + '</div>';
 
-}).error(function() { document.getElementById("info").innerHTML = "<h2>Server is not reachable, try after sometime</h2>" })
 });
