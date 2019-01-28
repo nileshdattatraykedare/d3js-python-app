@@ -9,6 +9,12 @@
 
 # API to fetch chart data
 
+# Installation of packages and dependencies
+
+ 
+ pipenv install
+ 
+
 
 curl -X GET \
   http://localhost:5000/get_chart_data \
@@ -17,6 +23,7 @@ curl -X GET \
 
 
 # Chart loads at following page:
+
 
 http://localhost:5000/
 
