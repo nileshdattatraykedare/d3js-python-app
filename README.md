@@ -1,15 +1,19 @@
 
 
-# Simple Frontend that produces stacked bar chart using D3 (d3js.org) and jquery (jquery.com)
+# D3 Chart and Python powered backend app to display d3 chart
 
-# backend is developed using Python3 and Flask
+*  Simple Frontend that produces stacked bar chart using D3 (d3js.org) and jquery (jquery.com)
 
+* API to fetch chart data
 
-# Datasource is sample.json
+## core Dependencies
+* Python 3
+* pipenv
+* flask
+* D3
+* Datasource is sample.json
 
-# API to fetch chart data
-
-# Installation of packages and dependencies
+## Installation of packages and dependencies
 
  
  pipenv install
@@ -22,7 +26,7 @@ curl -X GET \
   -H 'cache-control: no-cache'
 
 
-# Chart loads at following page:
+## Chart loads at following page:
 
 
 http://localhost:5000/
@@ -32,7 +36,7 @@ http://localhost:5000/
 
 python app.py
 
-##
+## screenshot attached
 
 ![alt text](screenshot_stacked_bar_chart.png)
 
