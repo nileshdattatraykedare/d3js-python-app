@@ -21,6 +21,11 @@ curl -X GET \
 http://localhost:5000/
 
 
-##
+## command
 
 python app.py
+
+##
+
+![alt text](screenshot_stacked_bar_chart.png)
+
