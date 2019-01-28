@@ -1,8 +1,20 @@
-// Setup svg using Bostock's margin convention
+//
 
-var margin = {top: 20, right: 160, bottom: 35, left: 30};
 
-var width = 960 - margin.left - margin.right,
+
+$(document).ready(function() {
+var url = 'http://localhost:5000/get_chart_data'
+
+$.getJSON(url, function( response ) {
+
+var data = response;
+
+
+console.log(data);
+
+var margin = {top: 20, right: 50, bottom: 35, left: 30};
+
+var width = 1280 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var svg = d3.select("body")
@@ -15,27 +27,17 @@ var svg = d3.select("body")
 
 /* Data in strings like it would be if imported from a csv */
 
-var data = [
-  { date: "2019-01-05", redDelicious: "10", mcintosh: "15", oranges: "9", pears: "6" },
-  { date: "2019-01-06", redDelicious: "12", mcintosh: "18", oranges: "9", pears: "4" },
-  { date: "2019-01-07", redDelicious: "05", mcintosh: "20", oranges: "8", pears: "2" },
-  { date: "2019-01-08", redDelicious: "01", mcintosh: "15", oranges: "5", pears: "4" },
-  { date: "2019-01-09", redDelicious: "02", mcintosh: "10", oranges: "4", pears: "2" },
-  { date: "2019-01-10", redDelicious: "03", mcintosh: "12", oranges: "6", pears: "3" },
-  { date: "2019-01-11", redDelicious: "04", mcintosh: "15", oranges: "8", pears: "1" },
-  { date: "2019-01-12", redDelicious: "06", mcintosh: "11", oranges: "9", pears: "4" },
-  { date: "2019-01-13", redDelicious: "10", mcintosh: "13", oranges: "9", pears: "5" },
-  { date: "2019-01-14", redDelicious: "16", mcintosh: "19", oranges: "6", pears: "9" },
-  { date: "2019-01-15", redDelicious: "19", mcintosh: "17", oranges: "5", pears: "7" },
-];
+//var data = [{"DATE":"2019-01-05T09:00:00.000Z","label1":"6","OTHERS":"95","label2":"5","label3":"4","label4":"4","label5":"4","label6":"4","label7":"4","label8":"4","label9":"3","label10":"3"},{"DATE":"2019-01-05T10:00:00.000Z","label1":"8","OTHERS":"143","label2":"6","label3":"6","label4":"5","label5":"5","label6":"5","label7":"5","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-05T11:00:00.000Z","label1":"6","OTHERS":"168","label2":"6","label3":"5","label4":"5","label5":"5","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-05T12:00:00.000Z","label1":"7","OTHERS":"167","label2":"6","label3":"5","label4":"5","label5":"5","label6":"5","label7":"5","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-05T13:00:00.000Z","label1":"8","OTHERS":"143","label2":"6","label3":"6","label4":"6","label5":"5","label6":"5","label7":"5","label8":"5","label9":"5","label10":"4"},{"DATE":"2019-01-05T14:00:00.000Z","label1":"5","OTHERS":"160","label2":"5","label3":"5","label4":"5","label5":"5","label6":"5","label7":"5","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-05T15:00:00.000Z","label1":"6","OTHERS":"171","label2":"6","label3":"6","label4":"5","label5":"4","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-05T16:00:00.000Z","label1":"7","OTHERS":"149","label2":"5","label3":"5","label4":"4","label5":"4","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-05T17:00:00.000Z","label1":"6","OTHERS":"164","label2":"5","label3":"5","label4":"5","label5":"5","label6":"5","label7":"5","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-05T18:00:00.000Z","label1":"4","OTHERS":"57","label2":"3","label3":"3","label4":"3","label5":"3","label6":"2","label7":"2","label8":"2","label9":"2","label10":"2"},{"DATE":"2019-01-05T19:00:00.000Z","label1":"4","OTHERS":"6","label2":"4","label3":"3","label4":"3","label5":"3","label6":"3","label7":"2","label8":"2","label9":"2","label10":"2"},{"DATE":"2019-01-05T20:00:00.000Z","label1":"4","OTHERS":"6","label2":"4","label3":"3","label4":"3","label5":"3","label6":"2","label7":"2","label8":"2","label9":"2","label10":"2"},{"DATE":"2019-01-05T21:00:00.000Z","label1":"6","OTHERS":"9","label2":"4","label3":"3","label4":"3","label5":"3","label6":"3","label7":"3","label8":"3","label9":"3","label10":"2"},{"DATE":"2019-01-05T22:00:00.000Z","label1":"5","OTHERS":"8","label2":"4","label3":"4","label4":"3","label5":"3","label6":"3","label7":"3","label8":"3","label9":"3","label10":"2"},{"DATE":"2019-01-05T23:00:00.000Z","label1":"5","OTHERS":"5","label2":"5","label3":"4","label4":"4","label5":"4","label6":"2","label7":"2","label8":"2","label9":"2","label10":"1"},{"DATE":"2019-01-06T00:00:00.000Z","label1":"5","OTHERS":"1","label2":"4","label3":"4","label4":"4","label5":"4","label6":"3","label7":"2","label8":"2","label9":"2","label10":"1"},{"DATE":"2019-01-06T01:00:00.000Z","label1":"5","OTHERS":"2","label2":"4","label3":"3","label4":"3","label5":"2","label6":"2","label7":"2","label8":"2","label9":"2","label10":"2"},{"DATE":"2019-01-06T02:00:00.000Z","label1":"5","OTHERS":"1","label2":"5","label3":"4","label4":"3","label5":"3","label6":"3","label7":"3","label8":"2","label9":"2","label10":"1"},{"DATE":"2019-01-06T03:00:00.000Z","label1":"4","OTHERS":"2","label2":"3","label3":"3","label4":"3","label5":"3","label6":"2","label7":"1","label8":"1","label9":"1","label10":"1"},{"DATE":"2019-01-06T04:00:00.000Z","label1":"7","OTHERS":"2","label2":"4","label3":"4","label4":"3","label5":"3","label6":"3","label7":"2","label8":"2","label9":"2","label10":"1"},{"DATE":"2019-01-06T05:00:00.000Z","label1":"4","OTHERS":"1","label2":"3","label3":"3","label4":"3","label5":"3","label6":"3","label7":"3","label8":"2","label9":"2","label10":"1"},{"DATE":"2019-01-06T06:00:00.000Z","label1":"5","OTHERS":"2","label2":"4","label3":"4","label4":"4","label5":"3","label6":"3","label7":"2","label8":"2","label9":"1","label10":"1"},{"DATE":"2019-01-06T07:00:00.000Z","label1":"5","OTHERS":"2","label2":"5","label3":"4","label4":"4","label5":"3","label6":"3","label7":"3","label8":"2","label9":"1","label10":"1"},{"DATE":"2019-01-06T08:00:00.000Z","label1":"4","OTHERS":"70","label2":"4","label3":"3","label4":"3","label5":"3","label6":"2","label7":"2","label8":"2","label9":"2","label10":"2"},{"DATE":"2019-01-06T09:00:00.000Z","label1":"8","OTHERS":"156","label2":"6","label3":"6","label4":"6","label5":"5","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-06T10:00:00.000Z","label1":"5","OTHERS":"166","label2":"5","label3":"5","label4":"5","label5":"5","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-06T11:00:00.000Z","label1":"7","OTHERS":"153","label2":"6","label3":"6","label4":"6","label5":"6","label6":"5","label7":"5","label8":"5","label9":"5","label10":"4"},{"DATE":"2019-01-06T12:00:00.000Z","label1":"7","OTHERS":"170","label2":"7","label3":"6","label4":"6","label5":"5","label6":"5","label7":"5","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-06T13:00:00.000Z","label1":"7","OTHERS":"158","label2":"6","label3":"6","label4":"5","label5":"5","label6":"5","label7":"5","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-06T14:00:00.000Z","label1":"7","OTHERS":"156","label2":"7","label3":"6","label4":"5","label5":"5","label6":"5","label7":"5","label8":"5","label9":"4","label10":"4"},{"DATE":"2019-01-06T15:00:00.000Z","label1":"9","OTHERS":"153","label2":"8","label3":"7","label4":"6","label5":"6","label6":"6","label7":"5","label8":"5","label9":"4","label10":"4"},{"DATE":"2019-01-06T16:00:00.000Z","label1":"7","OTHERS":"155","label2":"6","label3":"6","label4":"5","label5":"5","label6":"5","label7":"5","label8":"5","label9":"4","label10":"4"},{"DATE":"2019-01-06T17:00:00.000Z","label1":"7","OTHERS":"145","label2":"6","label3":"5","label4":"5","label5":"5","label6":"5","label7":"5","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-06T18:00:00.000Z","label1":"5","OTHERS":"52","label2":"3","label3":"3","label4":"3","label5":"3","label6":"3","label7":"2","label8":"2","label9":"2","label10":"2"},{"DATE":"2019-01-06T19:00:00.000Z","label1":"5","OTHERS":"8","label2":"5","label3":"5","label4":"4","label5":"3","label6":"3","label7":"3","label8":"3","label9":"3","label10":"3"},{"DATE":"2019-01-06T20:00:00.000Z","label1":"5","OTHERS":"9","label2":"4","label3":"4","label4":"4","label5":"4","label6":"3","label7":"3","label8":"3","label9":"3","label10":"2"},{"DATE":"2019-01-06T21:00:00.000Z","label1":"4","OTHERS":"8","label2":"4","label3":"3","label4":"3","label5":"3","label6":"3","label7":"3","label8":"3","label9":"3","label10":"3"},{"DATE":"2019-01-06T22:00:00.000Z","label1":"6","OTHERS":"2","label2":"3","label3":"3","label4":"2","label5":"2","label6":"2","label7":"1","label8":"1","label9":"1","label10":"1"},{"DATE":"2019-01-06T23:00:00.000Z","label1":"7","OTHERS":"7","label2":"5","label3":"5","label4":"4","label5":"3","label6":"3","label7":"3","label8":"2","label9":"2","label10":"2"},{"DATE":"2019-01-07T00:00:00.000Z","label1":"4","OTHERS":"114","label2":"4","label3":"4","label4":"4","label5":"4","label6":"3","label7":"3","label8":"3","label9":"3","label10":"3"},{"DATE":"2019-01-07T01:00:00.000Z","label1":"6","OTHERS":"225","label2":"6","label3":"5","label4":"5","label5":"4","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-07T02:00:00.000Z","label1":"5","OTHERS":"228","label2":"5","label3":"5","label4":"5","label5":"5","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-07T03:00:00.000Z","label1":"6","OTHERS":"216","label2":"6","label3":"6","label4":"5","label5":"4","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-07T04:00:00.000Z","label1":"7","OTHERS":"228","label2":"6","label3":"6","label4":"5","label5":"5","label6":"5","label7":"5","label8":"5","label9":"5","label10":"4"},{"DATE":"2019-01-07T05:00:00.000Z","label1":"6","OTHERS":"225","label2":"6","label3":"5","label4":"5","label5":"5","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-07T06:00:00.000Z","label1":"8","OTHERS":"228","label2":"6","label3":"5","label4":"5","label5":"4","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-07T07:00:00.000Z","label1":"7","OTHERS":"219","label2":"6","label3":"6","label4":"6","label5":"5","label6":"5","label7":"5","label8":"5","label9":"5","label10":"5"},{"DATE":"2019-01-07T08:00:00.000Z","label1":"6","OTHERS":"454","label2":"4","label3":"4","label4":"3","label5":"3","label6":"3","label7":"3","label8":"3","label9":"3","label10":"2"},{"DATE":"2019-01-07T09:00:00.000Z","label1":"6","OTHERS":"1825","label2":"6","label3":"5","label4":"5","label5":"5","label6":"5","label7":"4","label8":"4","label9":"4","label10":"4"},{"DATE":"2019-01-07T10:00:00.000Z","label1":"6","OTHERS":"1307","label2":"5","label3":"5","label4":"5","label5":"5","label6":"4","label7":"4","label8":"4","label9":"4","label10":"4"}]
+//console.log(data);
 
-var format = d3.time.format("%Y-%m-%d");
+var format = d3.time.format("%Y-%m-%dT%H");
 
 
 // Transpose the data into layers
-var dataset = d3.layout.stack()(["redDelicious", "mcintosh", "oranges", "pears"].map(function(fruit) {
+var dataset = d3.layout.stack()(["label1", "OTHERS", "label2", "label3", "label4", "label5", "label6", "label7", "label8", "label9", "label10"].map(function(fruit) {
   return data.map(function(d) {
-    return {x: format.parse(d.date), y: +d[fruit]};
+     d.DATE = d.DATE.substr(0,13)
+    return {x: format.parse(d.DATE), y: +d[fruit]};
   });
 }));
 
@@ -49,7 +51,7 @@ var y = d3.scale.linear()
   .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
   .range([height, 0]);
 
-var colors = ["b33040", "#d25c4d", "#f2b447", "#d9d574"];
+var colors = ["b33040", "#d25c4d", "#f2b447", "#d9d574", "#DAF7A6", "#581845", "#900C3F", "#FFC300", "#FF5733", "#3368FF", "#8333FF"];
 
 
 // Define and draw axes
@@ -63,7 +65,7 @@ var yAxis = d3.svg.axis()
 var xAxis = d3.svg.axis()
   .scale(x)
   .orient("bottom")
-  .tickFormat(d3.time.format("%Y"));
+  .tickFormat(d3.time.format("%H"));
 
 svg.append("g")
   .attr("class", "y axis")
@@ -119,3 +121,9 @@ tooltip.append("text")
   .style("text-anchor", "middle")
   .attr("font-size", "12px")
   .attr("font-weight", "bold");
+
+var dataLength = data.length;
+document.getElementById("info").innerHTML = '<div>' + data[0]['DATE'] + ' - ' + data[50-1]['DATE'] + '</div>';
+
+}).error(function() { document.getElementById("info").innerHTML = "<h2>Server is not reachable, try after sometime</h2>" })
+});
