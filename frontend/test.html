@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Assignment :: d3 stacked bar chart</title>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <style type="text/css">
+  svg {
+    font: 10px sans-serif;
+    shape-rendering: crispEdges;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+  }
+
+  path.domain {
+    stroke: none;
+  }
+
+  .y .tick line {
+    stroke: #ddd;
+  }
+  </style>
+
+</head>
+<body>
+<script type="text/javascript">
+
+// Setup svg using Bostock's margin convention
+
+var margin = {top: 20, right: 160, bottom: 35, left: 30};
+
+var width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var svg = d3.select("body")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+/* Data in strings like it would be if imported from a csv */
+
+/* var data = [
+  { year: "2006", redDelicious: "10", mcintosh: "15", oranges: "9", pears: "6" },
+  { year: "2007", redDelicious: "12", mcintosh: "18", oranges: "9", pears: "4" },
+  { year: "2008", redDelicious: "05", mcintosh: "20", oranges: "8", pears: "2" },
+  { year: "2009", redDelicious: "01", mcintosh: "15", oranges: "5", pears: "4" },
+  { year: "2010", redDelicious: "02", mcintosh: "10", oranges: "4", pears: "2" },
+  { year: "2011", redDelicious: "03", mcintosh: "12", oranges: "6", pears: "3" },
+  { year: "2012", redDelicious: "04", mcintosh: "15", oranges: "8", pears: "1" },
+  { year: "2013", redDelicious: "06", mcintosh: "11", oranges: "9", pears: "4" },
+  { year: "2014", redDelicious: "10", mcintosh: "13", oranges: "9", pears: "5" },
+  { year: "2015", redDelicious: "16", mcintosh: "19", oranges: "6", pears: "9" },
+  { year: "2016", redDelicious: "19", mcintosh: "17", oranges: "5", pears: "7" },
+]; */
+
+	/* var data = [
+	{ "year": "2006","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+	 { "year": "2007","GERARD.ALLISON": "10", "CINDI.CUMMINGS": "6", "ANETTE.WOODARD": "9", "COLLEEN.CHEN": "15", "DANELLE.PALMER": "6" },
+	  { "year": "2008","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+	   { "year": "2009","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+	   { "year": "2010","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+		{ "year": "2011","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+		 { "year": "2012","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+		 { "year": "2013","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+		  { "year": "2014","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+		  { "year": "2015","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" },
+		  { "year": "2016","GERARD.ALLISON": "6", "CINDI.CUMMINGS": "10", "ANETTE.WOODARD": "15", "COLLEEN.CHEN": "9", "DANELLE.PALMER": "6" }]
+ */
+var dataSource = {"NAMES": ["GASTON.OLSON", "ABEL.BATES", "HARLEY.KNOX", "RODGER.BROWN", "GITA.HENSLEY", "CATHLEEN.CRANE", "JONIE.PUGH", "RIMA.ROWE", "DORENE.DECKER", "ALENA.HOLMES", "ELVIN.VELEZ", "ANETTE.WOODARD", "FELICA.TANNER", "DEIRDRE.BAUER", "JANEEN.BERGER", "QIANA.KAISER", "ILANA.BURKE", "JANETTA.DAVENPORT", "VERNETTA.ROBERSON", "YASUKO.BARNETT", "JARRED.HANSON", "AUGUST.GENTRY", "ANGLE.HARMON", "ALFONSO.BUCKLEY", "DEMARCUS.ESCOBAR", "DELANA.WALTON", "MOHAMMAD.MERCER", "IVELISSE.WEBSTER", "JAMEE.OLIVER", "EZRA.VALENCIA", "ADELLA.GIBBS", "AGATHA.HUMPHREY", "DELORSE.BARR", "HARRIETTE.PARSONS", "RUBIN.BYRD", "ADRIA.HALL", "AMALIA.FORBES", "HWA.FITZGERALD", "REANNA.HESS", "GENNY.VAUGHN", "DIA.BOOTH", "ALLAN.ROSE", "ALFRED.KENT", "HILDE.BAUTISTA", "DANELLE.PALMER", "REAGAN.WAGNER", "PAMELA.HOWELL", "IESHA.ANDREWS", "AYANA.HOOD", "ILANA.GILMORE", "KRISTINA.PETERSON", "EMMA.BARR", "GERARD.ALLISON", "ARMANDINA.BENJAMIN", "EUSEBIO.VASQUEZ", "VIRGEN.WANG", "REX.BAKER", "ALVINA.REYNOLDS", "KIMBERLEY.KING", "JUAN.HOWELL", "RANEE.RIVERA", "MALIK.MERRITT", "GHISLAINE.FLYNN", "YUKO.HENDERSON", "ALBA.BURTON", "COLLEEN.CHEN", "ANDRIA.BOND", "EVELINA.RITTER", "DIAMOND.BRIGGS", "NGOC.BOOKER", "DEBERA.KRAUSE", "JANINE.HUANG", "BARRIE.BRIGGS", "ALEXA.PAGE", "AKIKO.ZAVALA", "FERMIN.BAILEY", "KURT.FRENCH", "WAYNE.FRY", "HANG.GALVAN", "SAL.SALAZAR", "EDMUNDO.RICHARD", "ILUMINADA.KAISER", "ALLEEN.HIGGINS", "EARLIE.RIOS", "ZONA.DAVID", "ELENI.ROCHA", "AMIEE.AGUILAR", "ANJA.OROZCO", "EDDIE.DAY", "EDGARDO.BRANDT", "NIDIA.WOLFE", "DONETTE.FORBES", "PILAR.REESE", "MARVELLA.MURILLO", "ROXIE.BYRD", "DONNY.GARRISON", "KELLE.PARKER", "FLORIDA.VINCENT", "ALINE.KOCH", "JUSTINE.ODOM", "BERNIE.BURGESS", "GENIA.ALLISON", "GILMA.HULL", "DEIRDRE.ROTH", "ALPHONSO.DANIEL", "CAREY.CASTANEDA", "TUYET.TANNER", "TOMMYE.BLEVINS", "ANALISA.BARAJAS", "RONNI.RANDOLPH", "DANIAL.HENSON", "AMERICA.ALVARADO", "EDA.HANSON", "LATORIA.LOVE", "DETRA.VELASQUEZ", "WEI.HOLDER", "CLARISA.COWAN", "DEANDREA.OSBORN", "EMANUEL.PEARSON", "YASMIN.FLEMING", "ALBA.POTTER", "ANNETTE.DURHAM", "DAISEY.ROACH", "JEANE.GREER", "BESS.DECKER", "JENA.HAMPTON", "EMERALD.HARDY", "ANITA.ROLLINS", "AMADA.BURNETT", "BARNEY.GONZALES", "GENNY.POWELL", "ISA.HANEY", "AKILAH.KEY", "SHELBA.SMALL", "AMMIE.ROTH", "FELTON.HOUSE", "ELICIA.WILEY", "MANA.MEYERS", "ELNORA.FROST", "QUEEN.HENSON", "KELI.JENKINS", "KARRI.BLANCHARD", "JEREMIAH.KHAN", "EMILY.POWERS", "ADDIE.GRIMES", "BRIDGETT.GOODWIN", "ALESSANDRA.ESCOBAR", "ZELMA.KEITH", "LUVENIA.LEBLANC", "DORETHA.RANDOLPH", "CINDI.CUMMINGS", "KARINE.PACE", "ELICIA.PUGH", "JANNET.HUFF", "BENNY.HUNTER", "CLEO.CERVANTES", "ELOUISE.PARKS", "ALBERTINE.BOYLE", "BABARA.ABBOTT", "EHTEL.WILLIAMS", "BREANA.VANCE", "ATHENA.ACOSTA", "TAINA.VANG", "ADRIAN.ATKINSON", "KIZZY.AGUILAR", "DESIREE.HESS", "GRANT.JOHNSON", "BRADLY.ALEXANDER", "ASHA.ROBBINS", "FREDRIC.BRYANT"], "DATA": [{"DATE": "2019-01-05T09:00:00.000Z", "GERARD.ALLISON": "6", "OTHERS": "95", "CINDI.CUMMINGS": "5", "ANETTE.WOODARD": "4", "COLLEEN.CHEN": "4", "DANELLE.PALMER": "4", "HANG.GALVAN": "4", "QIANA.KAISER": "4", "RODGER.BROWN": "4", "ALEXA.PAGE": "3", "BENNY.HUNTER": "3"}, {"DATE": "2019-01-05T10:00:00.000Z", "GENNY.VAUGHN": "8", "OTHERS": "143", "EMMA.BARR": "6", "FELICA.TANNER": "6", "DIAMOND.BRIGGS": "5", "EDDIE.DAY": "5", "KELI.JENKINS": "5", "RANEE.RIVERA": "5", "ANALISA.BARAJAS": "4", "EMERALD.HARDY": "4", "FERMIN.BAILEY": "4"}, {"DATE": "2019-01-05T11:00:00.000Z", "EDDIE.DAY": "6", "OTHERS": "168", "EMMA.BARR": "6", "DANELLE.PALMER": "5", "HANG.GALVAN": "5", "IVELISSE.WEBSTER": "5", "AKILAH.KEY": "4", "ALINE.KOCH": "4", "ATHENA.ACOSTA": "4", "BESS.DECKER": "4", "DEMARCUS.ESCOBAR": "4"}, {"DATE": "2019-01-05T12:00:00.000Z", "ALBA.POTTER": "7", "OTHERS": "167", "EARLIE.RIOS": "6", "ANETTE.WOODARD": "5", "ANJA.OROZCO": "5", "DEMARCUS.ESCOBAR": "5", "HANG.GALVAN": "5", "RODGER.BROWN": "5", "AKIKO.ZAVALA": "4", "DIAMOND.BRIGGS": "4", "EDDIE.DAY": "4"}, {"DATE": "2019-01-05T13:00:00.000Z", "HANG.GALVAN": "8", "OTHERS": "143", "ANALISA.BARAJAS": "6", "CINDI.CUMMINGS": "6", "JUSTINE.ODOM": "6", "ELOUISE.PARKS": "5", "ILANA.GILMORE": "5", "IVELISSE.WEBSTER": "5", "KARINE.PACE": "5", "KELI.JENKINS": "5", "ALBA.POTTER": "4"}, {"DATE": "2019-01-05T14:00:00.000Z", "AKILAH.KEY": "5", "OTHERS": "160", "ANJA.OROZCO": "5", "DEMARCUS.ESCOBAR": "5", "DORETHA.RANDOLPH": "5", "ELVIN.VELEZ": "5", "FELTON.HOUSE": "5", "GENNY.POWELL": "5", "ARMANDINA.BENJAMIN": "4", "EARLIE.RIOS": "4", "EMILY.POWERS": "4"}, {"DATE": "2019-01-05T15:00:00.000Z", "ATHENA.ACOSTA": "6", "OTHERS": "171", "EMILY.POWERS": "6", "PAMELA.HOWELL": "6", "ANALISA.BARAJAS": "5", "AKILAH.KEY": "4", "ANETTE.WOODARD": "4", "ARMANDINA.BENJAMIN": "4", "CINDI.CUMMINGS": "4", "DORETHA.RANDOLPH": "4", "ELVIN.VELEZ": "4"}, {"DATE": "2019-01-05T16:00:00.000Z", "BENNY.HUNTER": "7", "OTHERS": "149", "EMMA.BARR": "5", "REAGAN.WAGNER": "5", "ARMANDINA.BENJAMIN": "4", "EARLIE.RIOS": "4", "GENNY.POWELL": "4", "GITA.HENSLEY": "4", "JANNET.HUFF": "4", "JARRED.HANSON": "4", "JENA.HAMPTON": "4"}, {"DATE": "2019-01-05T17:00:00.000Z", "QUEEN.HENSON": "6", "OTHERS": "164", "AKILAH.KEY": "5", "ALBA.POTTER": "5", "ANALISA.BARAJAS": "5", "ANETTE.WOODARD": "5", "BENNY.HUNTER": "5", "EMERALD.HARDY": "5", "ELOUISE.PARKS": "4", "GITA.HENSLEY": "4", "ILANA.GILMORE": "4"}, {"DATE": "2019-01-05T18:00:00.000Z", "QIANA.KAISER": "4", "OTHERS": "57", "ADRIAN.ATKINSON": "3", "KARRI.BLANCHARD": "3", "NIDIA.WOLFE": "3", "SHELBA.SMALL": "3", "ALBA.POTTER": "2", "BESS.DECKER": "2", "EHTEL.WILLIAMS": "2", "EMERALD.HARDY": "2", "GENNY.VAUGHN": "2"}, {"DATE": "2019-01-05T19:00:00.000Z", "KARRI.BLANCHARD": "4", "OTHERS": "6", "KELLE.PARKER": "4", "HARLEY.KNOX": "3", "JANEEN.BERGER": "3", "JANINE.HUANG": "3", "NIDIA.WOLFE": "3", "ADRIAN.ATKINSON": "2", "ANITA.ROLLINS": "2", "IESHA.ANDREWS": "2", "PILAR.REESE": "2"}, {"DATE": "2019-01-05T20:00:00.000Z", "CLARISA.COWAN": "4", "OTHERS": "6", "PILAR.REESE": "4", "ANITA.ROLLINS": "3", "IESHA.ANDREWS": "3", "JANINE.HUANG": "3", "JANEEN.BERGER": "2", "KARRI.BLANCHARD": "2", "KELLE.PARKER": "2", "NIDIA.WOLFE": "2", "RIMA.ROWE": "2"}, {"DATE": "2019-01-05T21:00:00.000Z", "ADRIAN.ATKINSON": "6", "OTHERS": "9", "JANINE.HUANG": "4", "CLARISA.COWAN": "3", "IESHA.ANDREWS": "3", "KARRI.BLANCHARD": "3", "KELLE.PARKER": "3", "LATORIA.LOVE": "3", "PILAR.REESE": "3", "ZONA.DAVID": "3", "HARLEY.KNOX": "2"}, {"DATE": "2019-01-05T22:00:00.000Z", "IESHA.ANDREWS": "5", "OTHERS": "8", "ANITA.ROLLINS": "4", "VIRGEN.WANG": "4", "ADRIAN.ATKINSON": "3", "JANINE.HUANG": "3", "KARRI.BLANCHARD": "3", "LATORIA.LOVE": "3", "PILAR.REESE": "3", "RIMA.ROWE": "3", "CLARISA.COWAN": "2"}, {"DATE": "2019-01-05T23:00:00.000Z", "KARRI.BLANCHARD": "5", "OTHERS": "5", "WAYNE.FRY": "5", "ANITA.ROLLINS": "4", "LATORIA.LOVE": "4", "NIDIA.WOLFE": "4", "CLARISA.COWAN": "2", "JANINE.HUANG": "2", "KELLE.PARKER": "2", "ZONA.DAVID": "2", "ADRIAN.ATKINSON": "1"}, {"DATE": "2019-01-06T00:00:00.000Z", "EZRA.VALENCIA": "5", "OTHERS": "1", "AYANA.HOOD": "4", "RONNI.RANDOLPH": "4", "TOMMYE.BLEVINS": "4", "VERNETTA.ROBERSON": "4", "ILANA.BURKE": "3", "BERNIE.BURGESS": "2", "DONETTE.FORBES": "2", "FLORIDA.VINCENT": "2", "ANDRIA.BOND": "1"}, {"DATE": "2019-01-06T01:00:00.000Z", "FLORIDA.VINCENT": "5", "OTHERS": "2", "YASUKO.BARNETT": "4", "BERNIE.BURGESS": "3", "KIMBERLEY.KING": "3", "AYANA.HOOD": "2", "DONETTE.FORBES": "2", "EZRA.VALENCIA": "2", "ILANA.BURKE": "2", "TOMMYE.BLEVINS": "2", "VERNETTA.ROBERSON": "2"}, {"DATE": "2019-01-06T02:00:00.000Z", "DONETTE.FORBES": "5", "OTHERS": "1", "YASUKO.BARNETT": "5", "TOMMYE.BLEVINS": "4", "AYANA.HOOD": "3", "EZRA.VALENCIA": "3", "KIMBERLEY.KING": "3", "VERNETTA.ROBERSON": "3", "ANDRIA.BOND": "2", "RONNI.RANDOLPH": "2", "BERNIE.BURGESS": "1"}, {"DATE": "2019-01-06T03:00:00.000Z", "DONETTE.FORBES": "4", "OTHERS": "2", "ANDRIA.BOND": "3", "EZRA.VALENCIA": "3", "VERNETTA.ROBERSON": "3", "YASUKO.BARNETT": "3", "ILANA.BURKE": "2", "AYANA.HOOD": "1", "BERNIE.BURGESS": "1", "FLORIDA.VINCENT": "1", "KIMBERLEY.KING": "1"}, {"DATE": "2019-01-06T04:00:00.000Z", "VERNETTA.ROBERSON": "7", "OTHERS": "2", "ANDRIA.BOND": "4", "DONETTE.FORBES": "4", "EZRA.VALENCIA": "3", "KIMBERLEY.KING": "3", "RONNI.RANDOLPH": "3", "AYANA.HOOD": "2", "FLORIDA.VINCENT": "2", "TOMMYE.BLEVINS": "2", "BERNIE.BURGESS": "1"}, {"DATE": "2019-01-06T05:00:00.000Z", "FLORIDA.VINCENT": "4", "OTHERS": "1", "BERNIE.BURGESS": "3", "ILANA.BURKE": "3", "RONNI.RANDOLPH": "3", "TOMMYE.BLEVINS": "3", "VERNETTA.ROBERSON": "3", "YASUKO.BARNETT": "3", "EZRA.VALENCIA": "2", "KIMBERLEY.KING": "2", "ANDRIA.BOND": "1"}, {"DATE": "2019-01-06T06:00:00.000Z", "FLORIDA.VINCENT": "5", "OTHERS": "2", "BERNIE.BURGESS": "4", "RONNI.RANDOLPH": "4", "VERNETTA.ROBERSON": "4", "ANDRIA.BOND": "3", "YASUKO.BARNETT": "3", "AYANA.HOOD": "2", "DONETTE.FORBES": "2", "EZRA.VALENCIA": "1", "ILANA.BURKE": "1"}, {"DATE": "2019-01-06T07:00:00.000Z", "TOMMYE.BLEVINS": "5", "OTHERS": "2", "VERNETTA.ROBERSON": "5", "AYANA.HOOD": "4", "EZRA.VALENCIA": "4", "ANDRIA.BOND": "3", "FLORIDA.VINCENT": "3", "RONNI.RANDOLPH": "3", "DONETTE.FORBES": "2", "BERNIE.BURGESS": "1", "ILANA.BURKE": "1"}, {"DATE": "2019-01-06T08:00:00.000Z", "EDDIE.DAY": "4", "OTHERS": "70", "GENNY.VAUGHN": "4", "COLLEEN.CHEN": "3", "KIZZY.AGUILAR": "3", "TAINA.VANG": "3", "AKIKO.ZAVALA": "2", "ALINE.KOCH": "2", "ANJA.OROZCO": "2", "ARMANDINA.BENJAMIN": "2", "BESS.DECKER": "2"}, {"DATE": "2019-01-06T09:00:00.000Z", "FELICA.TANNER": "8", "OTHERS": "156", "ANJA.OROZCO": "6", "BENNY.HUNTER": "6", "PAMELA.HOWELL": "6", "EMILY.POWERS": "5", "AKILAH.KEY": "4", "ALINE.KOCH": "4", "DEMARCUS.ESCOBAR": "4", "EHTEL.WILLIAMS": "4", "ELOUISE.PARKS": "4"}, {"DATE": "2019-01-06T10:00:00.000Z", "AMMIE.ROTH": "5", "OTHERS": "166", "ANJA.OROZCO": "5", "DEMARCUS.ESCOBAR": "5", "ELVIN.VELEZ": "5", "KARINE.PACE": "5", "ALINE.KOCH": "4", "ANNETTE.DURHAM": "4", "COLLEEN.CHEN": "4", "EMMA.BARR": "4", "FELICA.TANNER": "4"}, {"DATE": "2019-01-06T11:00:00.000Z", "TAINA.VANG": "7", "OTHERS": "153", "AKIKO.ZAVALA": "6", "DEMARCUS.ESCOBAR": "6", "NGOC.BOOKER": "6", "REX.BAKER": "6", "EMERALD.HARDY": "5", "ILANA.GILMORE": "5", "JEANE.GREER": "5", "KELI.JENKINS": "5", "AMALIA.FORBES": "4"}, {"DATE": "2019-01-06T12:00:00.000Z", "ANALISA.BARAJAS": "7", "OTHERS": "170", "BENNY.HUNTER": "7", "HANG.GALVAN": "6", "JARRED.HANSON": "6", "EDDIE.DAY": "5", "JANNET.HUFF": "5", "MOHAMMAD.MERCER": "5", "ANNETTE.DURHAM": "4", "BESS.DECKER": "4", "COLLEEN.CHEN": "4"}, {"DATE": "2019-01-06T13:00:00.000Z", "FELICA.TANNER": "7", "OTHERS": "158", "GENNY.VAUGHN": "6", "JARRED.HANSON": "6", "AKIKO.ZAVALA": "5", "ELOUISE.PARKS": "5", "FELTON.HOUSE": "5", "KRISTINA.PETERSON": "5", "ALEXA.PAGE": "4", "ALINE.KOCH": "4", "JEANE.GREER": "4"}, {"DATE": "2019-01-06T14:00:00.000Z", "ANNETTE.DURHAM": "7", "OTHERS": "156", "FERMIN.BAILEY": "7", "ELOUISE.PARKS": "6", "AMMIE.ROTH": "5", "DEMARCUS.ESCOBAR": "5", "DIAMOND.BRIGGS": "5", "JEREMIAH.KHAN": "5", "ROXIE.BYRD": "5", "ALBA.POTTER": "4", "AUGUST.GENTRY": "4"}, {"DATE": "2019-01-06T15:00:00.000Z", "GITA.HENSLEY": "9", "OTHERS": "153", "EDDIE.DAY": "8", "ELICIA.PUGH": "7", "DORETHA.RANDOLPH": "6", "TUYET.TANNER": "6", "WEI.HOLDER": "6", "AMMIE.ROTH": "5", "EMERALD.HARDY": "5", "AKIKO.ZAVALA": "4", "AMALIA.FORBES": "4"}, {"DATE": "2019-01-06T16:00:00.000Z", "TAINA.VANG": "7", "OTHERS": "155", "AMALIA.FORBES": "6", "LUVENIA.LEBLANC": "6", "ATHENA.ACOSTA": "5", "BESS.DECKER": "5", "FERMIN.BAILEY": "5", "GENNY.VAUGHN": "5", "JONIE.PUGH": "5", "ALEXA.PAGE": "4", "EDDIE.DAY": "4"}, {"DATE": "2019-01-06T17:00:00.000Z", "EMERALD.HARDY": "7", "OTHERS": "145", "AUGUST.GENTRY": "6", "AKIKO.ZAVALA": "5", "ALBA.POTTER": "5", "IVELISSE.WEBSTER": "5", "JARRED.HANSON": "5", "RUBIN.BYRD": "5", "AKILAH.KEY": "4", "ELOUISE.PARKS": "4", "GERARD.ALLISON": "4"}, {"DATE": "2019-01-06T18:00:00.000Z", "CLARISA.COWAN": "5", "OTHERS": "52", "HARLEY.KNOX": "3", "JANINE.HUANG": "3", "JUSTINE.ODOM": "3", "LATORIA.LOVE": "3", "WAYNE.FRY": "3", "DORETHA.RANDOLPH": "2", "JANEEN.BERGER": "2", "JARRED.HANSON": "2", "KARRI.BLANCHARD": "2"}, {"DATE": "2019-01-06T19:00:00.000Z", "CLARISA.COWAN": "5", "OTHERS": "8", "LATORIA.LOVE": "5", "NIDIA.WOLFE": "5", "ZONA.DAVID": "4", "ANITA.ROLLINS": "3", "JANEEN.BERGER": "3", "JANINE.HUANG": "3", "KELLE.PARKER": "3", "PILAR.REESE": "3", "RIMA.ROWE": "3"}, {"DATE": "2019-01-06T20:00:00.000Z", "WAYNE.FRY": "5", "OTHERS": "9", "CLARISA.COWAN": "4", "JANEEN.BERGER": "4", "KARRI.BLANCHARD": "4", "PILAR.REESE": "4", "HARLEY.KNOX": "3", "JANINE.HUANG": "3", "NIDIA.WOLFE": "3", "ZONA.DAVID": "3", "ADRIAN.ATKINSON": "2"}, {"DATE": "2019-01-06T21:00:00.000Z", "JANEEN.BERGER": "4", "OTHERS": "8", "VIRGEN.WANG": "4", "CLARISA.COWAN": "3", "HARLEY.KNOX": "3", "JANINE.HUANG": "3", "LATORIA.LOVE": "3", "NIDIA.WOLFE": "3", "PILAR.REESE": "3", "RIMA.ROWE": "3", "ZONA.DAVID": "3"}, {"DATE": "2019-01-06T22:00:00.000Z", "WAYNE.FRY": "6", "OTHERS": "2", "RIMA.ROWE": "3", "VIRGEN.WANG": "3", "ADRIAN.ATKINSON": "2", "JANEEN.BERGER": "2", "PILAR.REESE": "2", "CLARISA.COWAN": "1", "HARLEY.KNOX": "1", "IESHA.ANDREWS": "1", "JANINE.HUANG": "1"}, {"DATE": "2019-01-06T23:00:00.000Z", "VIRGEN.WANG": "7", "OTHERS": "7", "ANITA.ROLLINS": "5", "KARRI.BLANCHARD": "5", "ZONA.DAVID": "4", "JANEEN.BERGER": "3", "JANINE.HUANG": "3", "KELLE.PARKER": "3", "CLARISA.COWAN": "2", "LATORIA.LOVE": "2", "PILAR.REESE": "2"}, {"DATE": "2019-01-07T00:00:00.000Z", "ALVINA.REYNOLDS": "4", "OTHERS": "114", "DELANA.WALTON": "4", "ELNORA.FROST": "4", "MALIK.MERRITT": "4", "MANA.MEYERS": "4", "ASHA.ROBBINS": "3", "CATHLEEN.CRANE": "3", "DETRA.VELASQUEZ": "3", "GENIA.ALLISON": "3", "GHISLAINE.FLYNN": "3"}, {"DATE": "2019-01-07T01:00:00.000Z", "ALLEEN.HIGGINS": "6", "OTHERS": "225", "DONNY.GARRISON": "6", "DANIAL.HENSON": "5", "DEIRDRE.ROTH": "5", "AMADA.BURNETT": "4", "AMIEE.AGUILAR": "4", "ANGLE.HARMON": "4", "ASHA.ROBBINS": "4", "BARRIE.BRIGGS": "4", "DEBERA.KRAUSE": "4"}, {"DATE": "2019-01-07T02:00:00.000Z", "ALFRED.KENT": "5", "OTHERS": "228", "ANGLE.HARMON": "5", "EDGARDO.BRANDT": "5", "GENIA.ALLISON": "5", "GRANT.JOHNSON": "5", "ADRIA.HALL": "4", "ALBA.BURTON": "4", "AMERICA.ALVARADO": "4", "BARRIE.BRIGGS": "4", "DAISEY.ROACH": "4"}, {"DATE": "2019-01-07T03:00:00.000Z", "BRIDGETT.GOODWIN": "6", "OTHERS": "216", "ELENI.ROCHA": "6", "ILUMINADA.KAISER": "6", "HWA.FITZGERALD": "5", "ALVINA.REYNOLDS": "4", "BARRIE.BRIGGS": "4", "DAISEY.ROACH": "4", "DANIAL.HENSON": "4", "DELANA.WALTON": "4", "DESIREE.HESS": "4"}, {"DATE": "2019-01-07T04:00:00.000Z", "DAISEY.ROACH": "7", "OTHERS": "228", "ALENA.HOLMES": "6", "DESIREE.HESS": "6", "AMERICA.ALVARADO": "5", "DEIRDRE.ROTH": "5", "KURT.FRENCH": "5", "REANNA.HESS": "5", "SAL.SALAZAR": "5", "ZELMA.KEITH": "5", "CATHLEEN.CRANE": "4"}, {"DATE": "2019-01-07T05:00:00.000Z", "ALVINA.REYNOLDS": "6", "OTHERS": "225", "JAMEE.OLIVER": "6", "ALFRED.KENT": "5", "EUSEBIO.VASQUEZ": "5", "EVELINA.RITTER": "5", "ADRIA.HALL": "4", "ALBA.BURTON": "4", "BRADLY.ALEXANDER": "4", "CATHLEEN.CRANE": "4", "DEBERA.KRAUSE": "4"}, {"DATE": "2019-01-07T06:00:00.000Z", "DORENE.DECKER": "8", "OTHERS": "228", "EVELINA.RITTER": "6", "DETRA.VELASQUEZ": "5", "YASMIN.FLEMING": "5", "ADRIA.HALL": "4", "ALLEEN.HIGGINS": "4", "ANGLE.HARMON": "4", "BARRIE.BRIGGS": "4", "BRADLY.ALEXANDER": "4", "BRIDGETT.GOODWIN": "4"}, {"DATE": "2019-01-07T07:00:00.000Z", "HILDE.BAUTISTA": "7", "OTHERS": "219", "ALVINA.REYNOLDS": "6", "CLEO.CERVANTES": "6", "JANETTA.DAVENPORT": "6", "DAISEY.ROACH": "5", "DEIRDRE.ROTH": "5", "EDA.HANSON": "5", "FREDRIC.BRYANT": "5", "GILMA.HULL": "5", "JUAN.HOWELL": "5"}, {"DATE": "2019-01-07T08:00:00.000Z", "ISA.HANEY": "6", "OTHERS": "454", "ADRIA.HALL": "4", "YUKO.HENDERSON": "4", "ANGLE.HARMON": "3", "ASHA.ROBBINS": "3", "DELANA.WALTON": "3", "DONNY.GARRISON": "3", "GASTON.OLSON": "3", "MARVELLA.MURILLO": "3", "ALBERTINE.BOYLE": "2"}, {"DATE": "2019-01-07T09:00:00.000Z", "BREANA.VANCE": "6", "OTHERS": "1825", "CAREY.CASTANEDA": "6", "ADELLA.GIBBS": "5", "ALLAN.ROSE": "5", "BABARA.ABBOTT": "5", "DEANDREA.OSBORN": "5", "ABEL.BATES": "4", "AGATHA.HUMPHREY": "4", "ALESSANDRA.ESCOBAR": "4", "ALFONSO.BUCKLEY": "4"}, {"DATE": "2019-01-07T10:00:00.000Z", "HARRIETTE.PARSONS": "6", "OTHERS": "1307", "ADDIE.GRIMES": "5", "DIA.BOOTH": "5", "EDMUNDO.RICHARD": "5", "ELICIA.WILEY": "5", "ALPHONSO.DANIEL": "4", "BARNEY.GONZALES": "4", "DEIRDRE.BAUER": "4", "DELORSE.BARR": "4", "EMANUEL.PEARSON": "4"}]}
+
+
+
+
+		  //console.log(data);
+		  //["GERARD.ALLISON", "CINDI.CUMMINGS", "ANETTE.WOODARD", "COLLEEN.CHEN", "DANELLE.PALMER", "year"]
+		  var data = dataSource.DATA;
+		  var names = dataSource.NAMES;
+		  var format = d3.time.format("%Y-%m-%d");
+
+
+
+		// Transpose the data into layers
+		var dataset = d3.layout.stack()(["GERARD.ALLISON", "CINDI.CUMMINGS", "ANETTE.WOODARD", "COLLEEN.CHEN", "DANELLE.PALMER","OTHERS"].map(function (record) {
+			return data.map(function (d) {
+				d.DATE = d.DATE.substr(0,10)
+				 console.log(record)
+				return { x: format.parse(d.DATE), y: +d[record] };
+			});
+		}));
+
+
+
+
+	// Set x, y and colors
+	var x = d3.scale.ordinal()
+		.domain(dataset[0].map(function (d) { return d.x; }))
+		.rangeRoundBands([10, width - 10], 0.02);
+
+	var y = d3.scale.linear()
+		.domain([0, d3.max(dataset, function (d) { return d3.max(d, function (d) { return d.y0 + d.y; }); })])
+		.range([height, 0]);
+
+
+	var colors = ["#b33040", "#d25c4d", "#f2b447", "#d9d574", "#008080","#00FFFF"];
+
+
+	// Define and draw axes
+	var yAxis = d3.svg.axis()
+		.scale(y)
+		.orient("left")
+		.ticks(5)
+		.tickSize(-width, 0, 0)
+		.tickFormat(function (d) { return d });
+
+	var xAxis = d3.svg.axis()
+		.scale(x)
+		.orient("bottom")
+		.tickFormat(d3.time.format("%Y-%m-%d"));
+
+	svg.append("g")
+		.attr("class", "y axis")
+		.call(yAxis);
+
+	svg.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+
+
+	// Create groups for each series, rects for each segment
+	var groups = svg.selectAll("g.cost")
+		.data(dataset)
+		.enter().append("g")
+		.attr("class", "cost")
+		.style("fill", function (d, i) { return colors[i]; });
+
+		var rect = groups.selectAll("rect")
+  .data(function(d) { return d; })
+  .enter()
+  .append("rect")
+  .attr("x", function(d) { return x(d.x); })
+  .attr("y", function(d) { return y(d.y0 + d.y); })
+  .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
+  .attr("width", x.rangeBand())
+  .on("mouseover", function() { tooltip.style("display", null); })
+  .on("mouseout", function() { tooltip.style("display", "none"); })
+  .on("mousemove", function(d) {
+    var xPosition = d3.mouse(this)[0] - 15;
+    var yPosition = d3.mouse(this)[1] - 25;
+    tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+    tooltip.select("text").text(d.y);
+  });
+
+
+	// Draw legend
+	var legend = svg.selectAll(".legend")
+		.data(colors)
+		.enter().append("g")
+		.attr("class", "legend")
+		.attr("transform", function (d, i) { return "translate(30," + i * 19 + ")"; });
+
+
+
+	// Prep the tooltip bits, initial display is hidden
+	var tooltip = svg.append("g")
+		.attr("class", "tooltip")
+		.style("display", "none");
+
+	tooltip.append("rect")
+		.attr("width", 30)
+		.attr("height", 20)
+		.attr("fill", "white")
+		.style("opacity", 0.5);
+
+	tooltip.append("text")
+		.attr("x", 15)
+		.attr("dy", "1.2em")
+		.style("text-anchor", "middle")
+		.attr("font-size", "12px")
+		.attr("font-weight", "bold");
+
+</script>
+</body>
+</html>
