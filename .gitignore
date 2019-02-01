@@ -1,2 +1,12 @@
 
 /venv/
+/.idea/
+.idea/misc.xml
+.idea/modules.xml
+.idea/protegrity-assigment.iml
+.idea/workspace.xml
+__pycache__/
+app.log
+backend/__pycache__/
+test.log
+test.py
